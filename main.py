@@ -85,7 +85,11 @@ def init():
         if pre_done[0] is None or pre_done[1] is None or pre_done[2] is None or pre_done[0] != "true":
             new_placeholder = "CHANGE_ME"
             new_placeholder2 = "CHANGE_ME"
+            print("==============")
+            time.sleep(3)
         else:
+            print("8988888888888")
+            time.sleep(3)
             new_placeholder = pre_done[1]
             new_placeholder2 = pre_done[2]
             print(pre_done[1])
