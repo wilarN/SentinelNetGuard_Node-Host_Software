@@ -38,6 +38,11 @@ while i < len(sys.argv):
 
     i += 1
 
+print(pre_text)
+print(part1_text)
+print(part2_text)
+time.sleep(5)
+
 if debugging:
     local_logging.LOGGING_MSG(2, "Debugging mode enabled.")
     # Delete log file if it exists
