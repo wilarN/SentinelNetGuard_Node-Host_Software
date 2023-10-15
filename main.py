@@ -25,6 +25,9 @@ def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
+clear()
+
+
 def init():
     local_logging.LOGGING_MSG(1, "-+-+-+-+-[ INITIALIZING NEW RUN ]+-+-+-+-+")
     time.sleep(0)
@@ -73,6 +76,12 @@ def init():
         time.sleep(1)
         local_logging.LOGGING_MSG(5, "Please configurate the server and rerun...")
         time.sleep(1)
+        print("!!!!!!!")
+        local_logging.LOGGING_MSG(4, "Config file at: " + useful.cfg_file_path)
+        local_logging.LOGGING_MSG(4, "Logging file at: " + local_logging.logging_file_path)
+        print("!!!!!!!")
+        time.sleep(2)
+
         local_logging.LOGGING_MSG(4, "Config file not configured.")
         exit("Please input node unid into the field in the config file(ex. node_instance_6516b6e739dcb).\n"
              "Then change the private_key that is unique to your client account.\n"
