@@ -8,6 +8,36 @@ import sys
 
 debugging = False
 
+pre_text = None
+part1_text = None
+part2_text = None
+
+i = 1
+while i < len(sys.argv):
+    if sys.argv[i] == '-pre':
+        # Check if there's a value after '-pre'
+        if i + 1 < len(sys.argv):
+            pre_text = sys.argv[i + 1]
+            i += 1  # Skip the value
+        else:
+            print("'-pre' argument is missing its value.")
+    elif sys.argv[i] == '-part1':
+        if i + 1 < len(sys.argv):
+            part1_text = sys.argv[i + 1]
+            i += 1
+        else:
+            print("'-part1' argument is missing its value.")
+    elif sys.argv[i] == '-part2':
+        if i + 1 < len(sys.argv):
+            part2_text = sys.argv[i + 1]
+            i += 1
+        else:
+            print("'-part2' argument is missing its value")
+    else:
+        print(f"Unknown argument: {sys.argv[i]}")
+
+    i += 1
+
 if debugging:
     local_logging.LOGGING_MSG(2, "Debugging mode enabled.")
     # Delete log file if it exists
@@ -30,35 +60,6 @@ clear()
 
 
 def pre_install_check():
-    pre_text = None
-    part1_text = None
-    part2_text = None
-    print("Running pre-installation check...")
-    i = 1
-    while i < len(sys.argv):
-        if sys.argv[i] == '-pre':
-            # Check if there's a value after '-pre'
-            if i + 1 < len(sys.argv):
-                pre_text = sys.argv[i + 1]
-                i += 1  # Skip the value
-            else:
-                print("'-pre' argument is missing its value.")
-        elif sys.argv[i] == '-part1':
-            if i + 1 < len(sys.argv):
-                part1_text = sys.argv[i + 1]
-                i += 1
-            else:
-                print("'-part1' argument is missing its value.")
-        elif sys.argv[i] == '-part2':
-            if i + 1 < len(sys.argv):
-                part2_text = sys.argv[i + 1]
-                i += 1
-            else:
-                print("'-part2' argument is missing its value")
-        else:
-            print(f"Unknown argument: {sys.argv[i]}")
-
-        i += 1
     return [pre_text, part1_text, part2_text]
 
 
@@ -85,11 +86,7 @@ def init():
         if pre_done[0] is None or pre_done[1] is None or pre_done[2] is None or pre_done[0] != "true":
             new_placeholder = "CHANGE_ME"
             new_placeholder2 = "CHANGE_ME"
-            print("==============")
-            time.sleep(3)
         else:
-            print("8988888888888")
-            time.sleep(3)
             new_placeholder = pre_done[1]
             new_placeholder2 = pre_done[2]
             print(pre_done[1])
@@ -153,6 +150,7 @@ def main_node_func(stopping_event, srv):
         local_logging.LOGGING_MSG(1, "Node Taken Offline.")
         stopping_event.set()
 
+
 def main():
     init()
     srv = useful.local_server(unid="test", owner="test", lifetime=0, destruct_time=-1)
@@ -164,7 +162,8 @@ def main():
     # fetch the node information using unid and validate using private key.
 
     if not srv.fetch_node_info():
-        local_logging.LOGGING_MSG(4, "Node information fetch failed. Continuing locally, node might not work as intended.")
+        local_logging.LOGGING_MSG(4,
+                                  "Node information fetch failed. Continuing locally, node might not work as intended.")
 
     stop_event = Event()
 
@@ -185,8 +184,6 @@ def main():
     time.sleep(0)
     local_logging.LOGGING_MSG(1, "[Node offline]")
     exit(0)
-
-
 
 
 if __name__ == '__main__':
