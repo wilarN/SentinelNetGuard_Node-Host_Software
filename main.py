@@ -12,6 +12,9 @@ pre_text = None
 part1_text = None
 part2_text = None
 
+print(sys.argv)
+time.sleep(5)
+
 i = 1
 while i < len(sys.argv):
     if sys.argv[i] == '-pre':
