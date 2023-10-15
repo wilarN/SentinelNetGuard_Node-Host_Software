@@ -4,6 +4,7 @@ from json import dumps
 from os import path, remove
 from threading import Event
 import time
+import sys
 
 debugging = False
 
@@ -28,6 +29,39 @@ def clear():
 clear()
 
 
+def pre_install_check():
+    pre_text = None
+    part1_text = None
+    part2_text = None
+    print("Running pre-installation check...")
+    i = 1
+    while i < len(sys.argv):
+        if sys.argv[i] == '-pre':
+            # Check if there's a value after '-pre'
+            if i + 1 < len(sys.argv):
+                pre_text = sys.argv[i + 1]
+                i += 1  # Skip the value
+            else:
+                print("'-pre' argument is missing its value.")
+        elif sys.argv[i] == '-part1':
+            if i + 1 < len(sys.argv):
+                part1_text = sys.argv[i + 1]
+                i += 1
+            else:
+                print("'-part1' argument is missing its value.")
+        elif sys.argv[i] == '-part2':
+            if i + 1 < len(sys.argv):
+                part2_text = sys.argv[i + 1]
+                i += 1
+            else:
+                print("'-part2' argument is missing its value")
+        else:
+            print(f"Unknown argument: {sys.argv[i]}")
+
+        i += 1
+    return [pre_text, part1_text, part2_text]
+
+
 def init():
     local_logging.LOGGING_MSG(1, "-+-+-+-+-[ INITIALIZING NEW RUN ]+-+-+-+-+")
     time.sleep(0)
@@ -37,6 +71,7 @@ def init():
     time.sleep(0)
     local_logging.LOGGING_MSG(1, "Checking if first run...")
     time.sleep(0)
+    pre_done = pre_install_check()
     try:
         # Check if config file exists
         f = open(useful.cfg_file_path)
@@ -47,10 +82,18 @@ def init():
                  "Then change the private_key that is unique to your client account.\n"
                  "Then rerun the software.")
     except IOError:
+        if pre_done[0] is None or pre_done[1] is None or pre_done[2] is None or pre_done[0] != "true":
+            new_placeholder = "CHANGE_ME"
+            new_placeholder2 = "CHANGE_ME"
+        else:
+            new_placeholder = pre_done[1]
+            new_placeholder2 = pre_done[2]
+            print(pre_done[1])
+            print(pre_done[2])
         config_file_structure = {
             "#__INFORMATION__#": "ANTELLO NODE CONFIG FILE --> DO NOT MESS WITH VALUES YOU DONT KNOW WHAT THEY DO.",
-            "server_unid": "CHANGE_ME",
-            "private_key": "CHANGE_ME",
+            "server_unid": f"{new_placeholder}",
+            "private_key": f"{new_placeholder2}",
             "host_ip": "0.0.0.0",
             "host_port": "59923",
             "init_join_msg": "Welcome to this SentinelNetGuard node! /help for help.",
@@ -138,6 +181,8 @@ def main():
     time.sleep(0)
     local_logging.LOGGING_MSG(1, "[Node offline]")
     exit(0)
+
+
 
 
 if __name__ == '__main__':

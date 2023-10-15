@@ -11,6 +11,9 @@ path = ""
 whitelist_file_path = "/opt/SentinelNetGuard/whitelist.txt"
 cfg_file_path = "/opt/SentinelNetGuard/config.json"
 
+#whitelist_file_path = "whitelist.txt"
+#cfg_file_path = "config.json"
+
 class local_server:
     def __init__(self, unid="null", owner="null", lifetime=0, destruct_time=-1):
         # Deusctruction time -1 == infinite alive_t
