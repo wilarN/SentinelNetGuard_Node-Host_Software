@@ -12,9 +12,6 @@ pre_text = None
 part1_text = None
 part2_text = None
 
-print(sys.argv)
-time.sleep(5)
-
 i = 1
 while i < len(sys.argv):
     if sys.argv[i] == '-pre':
@@ -40,11 +37,6 @@ while i < len(sys.argv):
         print(f"Unknown argument: {sys.argv[i]}")
 
     i += 1
-
-print(pre_text)
-print(part1_text)
-print(part2_text)
-time.sleep(5)
 
 if debugging:
     local_logging.LOGGING_MSG(2, "Debugging mode enabled.")
@@ -81,6 +73,7 @@ def init():
     local_logging.LOGGING_MSG(1, "Checking if first run...")
     time.sleep(0)
     pre_done = pre_install_check()
+    pre_gen = None
     try:
         # Check if config file exists
         f = open(useful.cfg_file_path)
@@ -94,7 +87,10 @@ def init():
         if pre_done[0] is None or pre_done[1] is None or pre_done[2] is None or pre_done[0] != "true":
             new_placeholder = "CHANGE_ME"
             new_placeholder2 = "CHANGE_ME"
+            pre_gen = False
         else:
+            pre_gen = True
+            local_logging.LOGGING_MSG(1, "Detected pre-installation!")
             new_placeholder = pre_done[1]
             new_placeholder2 = pre_done[2]
             print(pre_done[1])
@@ -126,18 +122,22 @@ def init():
         f.close()
         local_logging.LOGGING_MSG(1, "First run detected. Creating config file...")
         time.sleep(1)
-        local_logging.LOGGING_MSG(5, "Please configurate the server and rerun...")
-        time.sleep(1)
-        print("!!!!!!!")
-        local_logging.LOGGING_MSG(4, "Config file at: " + useful.cfg_file_path)
-        local_logging.LOGGING_MSG(4, "Logging file at: " + local_logging.logging_file_path)
-        print("!!!!!!!")
-        time.sleep(2)
+        if not pre_gen:
+            local_logging.LOGGING_MSG(5, "Please configurate the server and rerun...")
+            time.sleep(1)
+            print("!!!!!!!")
+            local_logging.LOGGING_MSG(4, "Config file at: " + useful.cfg_file_path)
+            local_logging.LOGGING_MSG(4, "Logging file at: " + local_logging.logging_file_path)
+            print("!!!!!!!")
+            time.sleep(2)
 
-        local_logging.LOGGING_MSG(4, "Config file not configured.")
-        exit("Please input node unid into the field in the config file(ex. node_instance_6516b6e739dcb).\n"
-             "Then change the private_key that is unique to your client account.\n"
-             "Then rerun the software.")
+            local_logging.LOGGING_MSG(4, "Config file not configured.")
+            exit("Please input node unid into the field in the config file(ex. node_instance_6516b6e739dcb).\n"
+                 "Then change the private_key that is unique to your client account.\n"
+                 "Then rerun the software.")
+        else:
+            local_logging.LOGGING_MSG(1, "Config file set automatically from pre-initialization.")
+            time.sleep(1)
 
     # End of init
     local_logging.LOGGING_MSG(1, "Server initialized.")
