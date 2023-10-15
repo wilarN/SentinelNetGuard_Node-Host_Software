@@ -5,12 +5,6 @@ from os import path, remove
 from threading import Event
 import time
 
-"""
-node_instance_65181a699c889
-icoimf42cskplw225gjyn9i9nabze3p3jndjbs37ej4sxwhp4ws3u7pm9n6a9otq
-port: 2030
-"""
-
 debugging = False
 
 if debugging:
@@ -102,39 +96,6 @@ def main_node_func(stopping_event, srv):
         sock.start_chatroom(stopping_event, srv)
         local_logging.LOGGING_MSG(1, "Node Taken Offline.")
         stopping_event.set()
-
-        # Potential future menu for the future.
-        """
-        print("-+-+-+-+-[ ANTELLO NODE HOSTER ]+-+-+-+-+\n"
-              "1. Start chatroom\n"
-              "2. Extend server lifetime\n"
-              "3. Delete server\n"
-              "4. Exit\n")
-        usr_sel = str(input("Selection: ").lower().strip(" "))
-        if usr_sel == "1":
-            # Start node socket chatroom
-            clear()
-            local_logging.LOGGING_MSG(1, "Node Started.")
-            sock.start_chatroom(stopping_event, srv)
-            local_logging.LOGGING_MSG(1, "Node Taken Offline.")
-            stopping_event.set()
-
-        elif usr_sel == "2":
-            stopping_event.set()
-
-        elif usr_sel == "3":
-            stopping_event.set()
-
-        elif usr_sel == "4":
-            local_logging.LOGGING_MSG(2, "Stopping main node thread...")
-            stopping_event.set()
-
-        else:
-            print("Invalid selection. Please try again.")
-            time.sleep(1)
-            clear()
-        """
-
 
 def main():
     init()
