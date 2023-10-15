@@ -175,12 +175,6 @@ def main():
 
     stop_event = Event()
 
-    """
-    # @REMEMBER Do i use threads or not? If so daemon or not? 
-    node_thread = Thread(target=main_node_thread)
-    # , daemon=True
-    node_thread.start()
-    """
 
     # Main loop
     main_node_func(stop_event, srv)
