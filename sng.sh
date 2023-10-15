@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CUSTOM_COMMAND="sng" # sng for SentinelNetGuard
+CUSTOM_COMMAND="sennet" # sng for SentinelNetGuard
 
 show_help() {
   echo "Usage: $CUSTOM_COMMAND [--start]"
