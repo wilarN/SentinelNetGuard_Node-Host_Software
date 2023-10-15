@@ -1,5 +1,6 @@
 from datetime import datetime
 
+logging_file_path = "/opt/SentinelNetGuard/log.log"
 
 def LOGGING_MSG(type:int, message: str, echoed: bool = True):
     """
@@ -9,14 +10,14 @@ def LOGGING_MSG(type:int, message: str, echoed: bool = True):
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     try:
-        f = open("log.log")
+        f = open(logging_file_path)
         f.close()
     except IOError:
-        f = open("log.log", "w")
+        f = open(logging_file_path, "w")
         f.close()
 
     # Write to log file
-    f = open("log.log", "a")
+    f = open(logging_file_path, "a")
 
     f.write("[" + str(current_time) + "] ")
     if type == 1:

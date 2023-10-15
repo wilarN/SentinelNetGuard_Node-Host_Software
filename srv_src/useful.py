@@ -8,6 +8,9 @@ path = ""
 
 # @REMEMBER fix logging here
 
+whitelist_file_path = "/opt/SentinelNetGuard/whitelist.txt"
+cfg_file_path = "/opt/SentinelNetGuard/config.json"
+
 class local_server:
     def __init__(self, unid="null", owner="null", lifetime=0, destruct_time=-1):
         # Deusctruction time -1 == infinite alive_t
@@ -26,8 +29,8 @@ class local_server:
         # Get whitelist
         self.whitelist = self.get_whitelist()
 
-        if not os.path.exists("whitelist.txt"):
-            with open("whitelist.txt", "w") as f:
+        if not os.path.exists(whitelist_file_path):
+            with open(whitelist_file_path, "w") as f:
                 f.write("")
 
     def get_whitelist_enabled(self):
@@ -41,11 +44,11 @@ class local_server:
 
     def get_whitelist(self):
         # if whitelist file doesnt exist, create it
-        if not os.path.exists("whitelist.txt"):
-            with open("whitelist.txt", "w") as f:
+        if not os.path.exists(whitelist_file_path):
+            with open(whitelist_file_path, "w") as f:
                 f.write("")
         # read whitelist from file
-        with open("whitelist.txt", "r") as f:
+        with open(whitelist_file_path, "r") as f:
             whitelist = f.readlines()
         # remove whitespace characters like `\n` at the end of each line
         whitelist = [x.strip() for x in whitelist]
@@ -53,14 +56,14 @@ class local_server:
 
     def add_to_whitelist(self, username):
         # add username to whitelist
-        with open("whitelist.txt", "a") as f:
+        with open(whitelist_file_path, "a") as f:
             f.write(username + "\n")
 
     def remove_from_whitelist(self, username):
         # remove username from whitelist
-        with open("whitelist.txt", "r") as f:
+        with open(whitelist_file_path, "r") as f:
             lines = f.readlines()
-        with open("whitelist.txt", "w") as f:
+        with open(whitelist_file_path, "w") as f:
             for line in lines:
                 if line.strip("\n") != username:
                     f.write(line)
@@ -228,12 +231,12 @@ def write_to_config_key(key: str, value: str):
     Writes to json config file
     """
     try:
-        with open("config.json", 'r') as json_file:
+        with open(cfg_file_path, 'r') as json_file:
             json_decoded = json.load(json_file)
 
         json_decoded[key] = value
 
-        with open("config.json", 'w') as json_file:
+        with open(cfg_file_path, 'w') as json_file:
             json.dump(json_decoded, json_file, indent=4)
     except Exception as e:
         print(e)
@@ -243,7 +246,7 @@ def get_config_key(specific_key: str):
     """
     Reads from json config file key
     """
-    with open("config.json") as json_file:
+    with open(cfg_file_path) as json_file:
         json_decoded = json.load(json_file)
 
     return json_decoded[f'{specific_key}']

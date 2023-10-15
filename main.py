@@ -10,12 +10,12 @@ debugging = False
 if debugging:
     local_logging.LOGGING_MSG(2, "Debugging mode enabled.")
     # Delete log file if it exists
-    if path.exists("log.log"):
-        remove("log.log")
+    if path.exists(local_logging.logging_file_path):
+        remove(local_logging.logging_file_path)
 
     # Delete config file if it exists
-    if path.exists("config.json"):
-        remove("config.json")
+    if path.exists(useful.cfg_file_path):
+        remove(useful.cfg_file_path)
 
 
 def clear():
@@ -36,7 +36,7 @@ def init():
     time.sleep(0)
     try:
         # Check if config file exists
-        f = open("config.json")
+        f = open(useful.cfg_file_path)
         f.close()
         if useful.get_config_key("server_unid") == "CHANGE_ME" or useful.get_config_key("private_key") == "CHANGE_ME":
             local_logging.LOGGING_MSG(4, "Config file not configured.")
@@ -66,7 +66,7 @@ def init():
 
         cfg_json_format = dumps(config_file_structure, indent=4)
         # Create config file
-        f = open("config.json", "w")
+        f = open(useful.cfg_file_path, "w")
         f.write(cfg_json_format)
         f.close()
         local_logging.LOGGING_MSG(1, "First run detected. Creating config file...")
