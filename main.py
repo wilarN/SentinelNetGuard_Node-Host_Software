@@ -199,7 +199,7 @@ def main_node_func(stopping_event, srv):
 
 def main():
     init()
-    srv = useful.local_server(unid="test", owner="test", lifetime=0, destruct_time=-1, whitelist_text)
+    srv = useful.local_server(pre_whitelist=whitelist_text, unid="test", owner="test", lifetime=0, destruct_time=-1)
     local_logging.LOGGING_MSG(1, "Server created.")
     time.sleep(0)
     # srv.update_local_cfg()
