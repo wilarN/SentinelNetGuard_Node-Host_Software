@@ -1,260 +1,230 @@
 import os
+import socket
+
+from srv_src import local_logging, useful, sock
+from json import dumps
+from os import path, remove
+from threading import Event
 import time
-import json
-import requests
+import sys
 
-path = ""
-# ex. "public/"
+"""
+Copyright © William Johnsson 2023 
 
-# @REMEMBER fix logging here
+This code is protected by copyright law. No license is granted. Unauthorized use, modification, or distribution is prohibited.
+Contact https://github.com/wilarN for more information.
+"""
 
-whitelist_file_path = "/opt/SentinelNetGuard/whitelist.txt"
-cfg_file_path = "/opt/SentinelNetGuard/config.json"
+debugging = False
 
-#whitelist_file_path = "whitelist.txt"
-#cfg_file_path = "config.json"
+pre_text = None
+part1_text = None
+part2_text = None
+whitelist_text = None
 
-class local_server:
-    def __init__(self, unid="null", owner="null", lifetime=0, destruct_time=-1, pre_whitelist = []):
-        # Deusctruction time -1 == infinite alive_t
-        self.unid = unid
-        self.owner = owner
-        self.lifetime = lifetime
-        self.destruct_time = destruct_time
-        self.time_created = ""
-        self.connected_users = ""
-        self.location = ""
-        self.node_admins = ""
-        self.server_url = "localhost"
-        self.active = False
-        self.whitelist_enabled = True
-        self.pre_whitelist = pre_whitelist
-
-        # Get whitelist
-        self.whitelist = self.get_whitelist()
-
-        if not os.path.exists(whitelist_file_path):
-            with open(whitelist_file_path, "w") as f:
-                f.write("")
-
-        # Add pre-whitelist to whitelist
-        for user in self.pre_whitelist:
-            self.add_to_whitelist(user)
-
-    def get_whitelist_enabled(self):
-        return self.whitelist_enabled
-
-    def whitelist_enabled_in_cfg(self):
-        if get_config_key("whitelist") == "true":
-            self.whitelist_enabled = True
+i = 1
+while i < len(sys.argv):
+    if sys.argv[i] == '-pre':
+        # Check if there's a value after '-pre'
+        if i + 1 < len(sys.argv):
+            pre_text = sys.argv[i + 1]
+            i += 1  # Skip the value
         else:
-            self.whitelist_enabled = False
-
-    def get_whitelist(self):
-        # if whitelist file doesnt exist, create it
-        if not os.path.exists(whitelist_file_path):
-            with open(whitelist_file_path, "w") as f:
-                f.write("")
-        # read whitelist from file
-        with open(whitelist_file_path, "r") as f:
-            whitelist = f.readlines()
-        # remove whitespace characters like `\n` at the end of each line
-        whitelist = [x.strip() for x in whitelist]
-        return whitelist
-
-    def add_to_whitelist(self, username):
-        # add username to whitelist
-        with open(whitelist_file_path, "a") as f:
-            f.write(username + "\n")
-
-    def remove_from_whitelist(self, username):
-        # remove username from whitelist
-        with open(whitelist_file_path, "r") as f:
-            lines = f.readlines()
-        with open(whitelist_file_path, "w") as f:
-            for line in lines:
-                if line.strip("\n") != username:
-                    f.write(line)
-
-    def set_active(self):
-        """
-        Set server to active in db.
-        """
-        # Get private key and unid from cfg
-        priv_key = get_config_key("private_key")
-        callback_type = "mgsengfse789fj39p2qjf8920qjf02q9d2a"
-        unid = get_config_key("server_unid")
-        url_actual = get_config_key("server_url")
-
-        r = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
-        # get echoed response
-        response = r.text
-
-        # Return node info
-        if response == "true":
-            self.active = True
-            return True
+            print("'-pre' argument is missing its value.")
+    elif sys.argv[i] == '-part1':
+        if i + 1 < len(sys.argv):
+            part1_text = sys.argv[i + 1]
+            i += 1
         else:
-            self.active = False
-            return False
-
-    def set_inactive(self):
-        """
-        Set server to active in db.
-        """
-        # Get private key and unid from cfg
-        priv_key = get_config_key("private_key")
-        callback_type = "dha278hda280hd7829a9cdn7897892"
-        unid = get_config_key("server_unid")
-        url_actual = get_config_key("server_url")
-
-        r = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
-        # get echoed response
-        response = r.text
-
-        # Return node info
-        if response == "true":
-            self.active = False
-            return True
+            print("'-part1' argument is missing its value.")
+    elif sys.argv[i] == '-part2':
+        if i + 1 < len(sys.argv):
+            part2_text = sys.argv[i + 1]
+            i += 1
         else:
-            self.active = True
-            return False
-
-    def update_global_host_info(self):
-        """
-        Get ip and port from cfg and contact webserver
-        """
-        specified_ip = get_config_key("host_ip")
-        specified_port = get_config_key("host_port")
-
-        url_actual = get_config_key("server_url")
-        callback_type = "vdnaa2ood2ha7dh2ahajklhcxjzndghoan"
-        unid = get_config_key("server_unid")
-        priv_key = get_config_key("private_key")
-
-        whitelist = self.get_whitelist()
-        whitelist = ",".join(whitelist)
-        print("WHITELIST SENT TO DB: ", whitelist)
-
-        successful = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&global_update=true&unid={unid}&priv_key={priv_key}&ip={specified_ip}&port={specified_port}&whitelist={whitelist}")
-        # Convert response to json
-        # print(successful)
-        # print(successful.text)
-        # Return node info
-        if successful.text == "true":
-            return True
+            print("'-part2' argument is missing its value")
+    elif sys.argv[i] == '-whitelist':
+        if i + 1 < len(sys.argv):
+            whitelist_text = sys.argv[i + 1]
+            i += 1
         else:
-            return False
+            print("'-whitelist' argument is missing its value")
+    else:
+        print(f"Unknown argument: {sys.argv[i]}")
 
-    def get_node_info(self):
-        """
-        Get node information from webserver callback.
-        """
-        # Use requests to get node info from api callback
-        # http://localhost/antello/public/create.php?auth=ghwhs907fy3vj7890fmw7vh387r3h8f7h3d&srv_host_callback=true&unid=node_instance_65181a699c889&pkey=icoimf42cskplw225gjyn9i9nabze3p3jndjbs37ej4sxwhp4ws3u7pm9n6a9otq
+    i += 1
 
-        # Get private key and unid from cfg
-        priv_key = get_config_key("private_key")
-        callback_type = "ghwhs907fy3vj7890fmw7vh387r3h8f7h3d"
-        unid = get_config_key("server_unid")
-        url_actual = get_config_key("server_url")
+if debugging:
+    local_logging.LOGGING_MSG(2, "Debugging mode enabled.")
+    # Delete log file if it exists
+    if path.exists(local_logging.logging_file_path):
+        remove(local_logging.logging_file_path)
 
-        r = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
-        # Convert response to json
-        node_info = r.json()
-        del r
-        # Return node info
-        return node_info
+    # Delete config file if it exists
+    if path.exists(useful.cfg_file_path):
+        remove(useful.cfg_file_path)
 
-    def fetch_node_info(self):
+
+def clear():
+    """
+    Clears the terminal screen.
+    """
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+clear()
+
+
+def get_ip():
+	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	s.settimeout(0)
+	try:
+		# doesn't even have to be reachable
+		s.connect(('10.254.254.254', 1))
+		IP = s.getsockname()[0]
+	except Exception:
+		IP = '0.0.0.0'
+	finally:
+		s.close()
+	return IP
+
+
+def pre_install_check():
+    return [pre_text, part1_text, part2_text]
+
+
+def init():
+    local_logging.LOGGING_MSG(1, "-+-+-+-+-[ INITIALIZING NEW RUN ]+-+-+-+-+")
+    time.sleep(0)
+    local_logging.LOGGING_MSG(1, "Initializing...")
+    time.sleep(0)
+    local_logging.LOGGING_MSG(1, "Server initializing...")
+    time.sleep(0)
+    local_logging.LOGGING_MSG(1, "Checking if first run...")
+    time.sleep(0)
+    pre_done = pre_install_check()
+    pre_gen = None
+    try:
+        # Check if config file exists
+        f = open(useful.cfg_file_path)
+        f.close()
+        if useful.get_config_key("server_unid") == "CHANGE_ME" or useful.get_config_key("private_key") == "CHANGE_ME":
+            local_logging.LOGGING_MSG(4, "Config file not configured.")
+            exit("Please input node unid into the field in the config file(ex. node_instance_6516b6e739dcb).\n"
+                 "Then change the private_key that is unique to your client account.\n"
+                 "Then rerun the software.")
+    except IOError:
+        if pre_done[0] is None or pre_done[1] is None or pre_done[2] is None or pre_done[0] != "true":
+            new_placeholder = "CHANGE_ME"
+            new_placeholder2 = "CHANGE_ME"
+            pre_gen = False
+        else:
+            pre_gen = True
+            local_logging.LOGGING_MSG(1, "Detected pre-installation!")
+            new_placeholder = pre_done[1]
+            new_placeholder2 = pre_done[2]
+            print(pre_done[1])
+            print(pre_done[2])
+
         try:
-            info = self.get_node_info()
-            print(f"FETCHED NODE INFORAMTION: {info}")
-
-            # Set self variables to node info
-            self.unid = info["unid"]
-            self.owner = info["owned_by"]
-            self.time_created = info["time_created"]
-            self.connected_users = info["connected_users"]
-            self.location = info["location"]
-            self.node_admins = info["node_admins"]
-
-            # Update local config
-            self.update_local_cfg()
-
-            return True
-
+            set_ip = get_ip()
+            print(set_ip)
         except Exception as e:
-            print(f"ERROR {e}")
-            return False
-
-    def validate_destruction(self):
-        """
-        Validate if destruction time has passed.
-        :return:
-        true or false
-        """
-        if self.destruct_time == -1:
-            return False
-        else:
-            if self.destruct_time < time.time():
-                return True
-            else:
-                return False
-
-    def self_delete(self):
-        """
-        Permentantly delete server and node.
-        // Alt --> run cleanup script on node.
-        :return:
-        """
-
-        # LOGGING_MSG(1, "Server " + self.unid + " is being deleted.")
-        # Detele object
-        del self
-
-    def update_local_cfg(self):
-        try:
-            write_to_config_key("server_unid", str(self.unid))
-            write_to_config_key("server_owner", str(self.owner))
-            write_to_config_key("server_lifetime", str(self.lifetime))
-            write_to_config_key("server_destruct_time", str(self.destruct_time))
-            write_to_config_key("time_created", str(self.time_created))
-            write_to_config_key("connected_users", str(self.connected_users))
-            write_to_config_key("location", str(self.location))
-            write_to_config_key("node_admins", str(self.node_admins))
-        except Exception as e:
+            set_ip = "0.0.0.0"
             print(e)
 
-    def refresh_connected_users(self):
-        pass
+        config_file_structure = {
+            "#__INFORMATION__#": "ANTELLO NODE CONFIG FILE --> DO NOT MESS WITH VALUES YOU DONT KNOW WHAT THEY DO.",
+            "server_unid": f"{new_placeholder}",
+            "private_key": f"{new_placeholder2}",
+            "host_ip": f"{set_ip}",
+            "host_port": "59923",
+            "init_join_msg": "Welcome to this SentinelNetGuard node! /help for help.",
+            "first_run": "false",
+            "time_created": "",
+            "connected_users": "",
+            "location": "",
+            "node_admins": "",
+            "server_owner": "null",
+            "server_lifetime": "0",
+            "server_destruct_time": "-1",
+            "allowed_concurrent_connections": "50",
+            "server_url": "sentinel.gibb.club",
+            "whitelist": "true"
+        }
+
+        cfg_json_format = dumps(config_file_structure, indent=4)
+        # Create config file
+        f = open(useful.cfg_file_path, "w")
+        f.write(cfg_json_format)
+        f.close()
+        local_logging.LOGGING_MSG(1, "First run detected. Creating config file...")
+        time.sleep(1)
+        if not pre_gen:
+            local_logging.LOGGING_MSG(5, "Please configurate the server and rerun...")
+            time.sleep(1)
+            print("!!!!!!!")
+            local_logging.LOGGING_MSG(4, "Config file at: " + useful.cfg_file_path)
+            local_logging.LOGGING_MSG(4, "Logging file at: " + local_logging.logging_file_path)
+            print("!!!!!!!")
+            time.sleep(2)
+
+            local_logging.LOGGING_MSG(4, "Config file not configured.")
+            exit("Please input node unid into the field in the config file(ex. node_instance_6516b6e739dcb).\n"
+                 "Then change the private_key that is unique to your client account.\n"
+                 "Then rerun the software.")
+        else:
+            local_logging.LOGGING_MSG(1, "Config file set automatically from pre-initialization.")
+            time.sleep(1)
+
+    # End of init
+    local_logging.LOGGING_MSG(1, "Server initialized.")
+    time.sleep(0)
 
 
-def write_to_config_key(key: str, value: str):
+def main_node_func(stopping_event, srv):
     """
-    Writes to json config file
+    Think of this thread as the genesis function.
     """
-    try:
-        with open(cfg_file_path, 'r') as json_file:
-            json_decoded = json.load(json_file)
+    clear()
+    local_logging.LOGGING_MSG(2, "Main node thread started...")
+    while not stopping_event.is_set():
+        # For now, just boot up and start the node upon running the script.
+        clear()
+        local_logging.LOGGING_MSG(1, "Node Started.")
+        sock.start_chatroom(stopping_event, srv)
+        local_logging.LOGGING_MSG(1, "Node Taken Offline.")
+        stopping_event.set()
 
-        json_decoded[key] = value
 
-        with open(cfg_file_path, 'w') as json_file:
-            json.dump(json_decoded, json_file, indent=4)
-    except Exception as e:
-        print(e)
+def main():
+    init()
+    srv = useful.local_server(unid="test", owner="test", lifetime=0, destruct_time=-1, pre_whitelist=whitelist_text)
+    local_logging.LOGGING_MSG(1, "Server created.")
+    time.sleep(0)
+    # srv.update_local_cfg()
+    # LOGGING_MSG(1, "Server config updated.")
+
+    # fetch the node information using unid and validate using private key.
+
+    if not srv.fetch_node_info():
+        local_logging.LOGGING_MSG(4,
+                                  "Node information fetch failed. Continuing locally, node might not work as intended.")
+
+    stop_event = Event()
 
 
-def get_config_key(specific_key: str):
-    """
-    Reads from json config file key
-    """
-    with open(cfg_file_path) as json_file:
-        json_decoded = json.load(json_file)
+    # Main loop
+    main_node_func(stop_event, srv)
 
-    return json_decoded[f'{specific_key}']
+    # Cleanup below
+    srv.set_inactive()
+    srv.self_delete()
+    local_logging.LOGGING_MSG(1, "Server object deleted.")
+    time.sleep(0)
+    local_logging.LOGGING_MSG(1, "[Node offline]")
+    exit(0)
+
+
+if __name__ == '__main__':
+    main()
