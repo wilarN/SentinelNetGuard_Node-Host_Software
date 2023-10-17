@@ -15,6 +15,7 @@ class bcolors:
 
 logging_file_path = "/opt/SentinelNetGuard/log.log"
 
+
 def LOGGING_MSG(type:int, message: str, echoed: bool = True):
     """
     Custom logging function. Writes to log.log file and prints to console.
@@ -35,30 +36,30 @@ def LOGGING_MSG(type:int, message: str, echoed: bool = True):
     f.write("[" + str(current_time) + "] ")
     if type == 1:
         if echoed:
-            print("[INFO] " + message)
+            print(f"{bcolors.OKBLUE}[INFO] " + message + f"{bcolors.ENDC}")
         f.write("[INFO] " + message + "\n")
     elif type == 2:
         if echoed:
-            print("[WARNING] " + message)
+            print(f"{bcolors.WARNING}[WARNING] " + message + f"{bcolors.ENDC}")
         f.write("[WARNING] " + message + "\n")
     elif type == 3:
         if echoed:
-            print("[ERROR] " + message)
+            print(f"{bcolors.FAIL}[ERROR] " + message + f"{bcolors.ENDC}")
         f.write("[ERROR] " + message + "\n")
     elif type == 4:
         if echoed:
-            print("[FATAL] " + message)
+            print(f"{bcolors.FAIL}[FATAL] " + message + f"{bcolors.ENDC}")
         f.write("[FATAL] " + message + "\n")
     elif type == 5:
         if echoed:
-            print("[ATTENTION] " + message)
+            print(f"{bcolors.UNDERLINE}[ATTENTION] " + message + f"{bcolors.ENDC}")
         f.write("[ATTENTION] " + message + "\n")
     elif type == 6:
         if echoed:
-            print("[NODE_CLIENT] " + message)
+            print(f"{bcolors.OKGREEN}[NODE_CLIENT] " + message + f"{bcolors.ENDC}")
         f.write("[NODE_CLIENT] " + message + "\n")
     else:
         if echoed:
-            print("[WARNING] " + message)
+            print(f"{bcolors.WARNING}[WARNING] " + message + f"{bcolors.ENDC}")
         f.write("[WARNING] " + message + "\n")
     f.close()

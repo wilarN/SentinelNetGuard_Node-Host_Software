@@ -480,8 +480,8 @@ def start_chatroom(stop_event, srv):
     LOGGING_MSG(1, f"Host started on {host}:{port}")
     LOGGING_MSG(5, "[ Welcome to the SentinelNetGuard Node Terminal! /help if you need help. ]")
     time.sleep(0.5)
-    print(f"- Unique Node ID: {get_config_key('server_unid')}")
-    print(f"- Hosted on: {get_config_key('host_ip')}:{get_config_key('host_port')}")
+    print(f"{bcolo.OKCYAN}- Unique Node ID: {get_config_key('server_unid')}" + bcolo.ENDC)
+    print(f"{bcolo.OKCYAN}- Hosted on: {get_config_key('host_ip')}:{get_config_key('host_port')}" + bcolo.ENDC)
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as node_socket:
