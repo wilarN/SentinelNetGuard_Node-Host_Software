@@ -427,6 +427,8 @@ def start_chatroom(stop_event, srv):
 
     if srv.update_global_host_info():
         LOGGING_MSG(1, "IP and PORT online.")
+        if get_config_key("server_owner") not in srv.get_whitelist():
+            srv.add_to_whitelist(get_config_key("server_owner"))
     else:
         LOGGING_MSG(2, "Unable to set IP and PORT online but proceeding anyway...")
         LOGGING_MSG(2, "Clients may have connection issues, please review your cfg and try again.")

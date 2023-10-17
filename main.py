@@ -76,17 +76,16 @@ clear()
 
 
 def get_ip():
-	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	s.settimeout(0)
-	try:
-		# doesn't even have to be reachable
-		s.connect(('10.254.254.254', 1))
-		IP = s.getsockname()[0]
-	except Exception:
-		IP = '0.0.0.0'
-	finally:
-		s.close()
-	return IP
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(0)
+    try:
+        s.connect(('10.254.254.254', 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '0.0.0.0'
+    finally:
+        s.close()
+    return IP
 
 
 def pre_install_check():
@@ -212,7 +211,6 @@ def main():
                                   "Node information fetch failed. Continuing locally, node might not work as intended.")
 
     stop_event = Event()
-
 
     # Main loop
     main_node_func(stop_event, srv)
