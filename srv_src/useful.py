@@ -136,7 +136,6 @@ class local_server:
 
         whitelist = self.get_whitelist()
         whitelist = ",".join(whitelist)
-        print("WHITELIST SENT TO DB: ", whitelist)
 
         successful = requests.get(
             f"https://{url_actual}/{path}create.php?auth={callback_type}&global_update=true&unid={unid}&priv_key={priv_key}&ip={specified_ip}&port={specified_port}&whitelist={whitelist}")
@@ -171,8 +170,6 @@ class local_server:
     def fetch_node_info(self):
         try:
             info = self.get_node_info()
-            print(f"FETCHED NODE INFORAMTION: {info}")
-
             # Set self variables to node info
             self.unid = info["unid"]
             self.owner = info["owned_by"]

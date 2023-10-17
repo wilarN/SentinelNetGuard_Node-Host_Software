@@ -45,7 +45,7 @@ BUFFER_SIZE = 1024
 
 
 def terminal_prefix_fixer():
-    print(terminal_prefix, end="")
+    print(f"{bcolo.OKCYAN}" + terminal_prefix + f"{bcolo.ENDC}", end="")
 
 
 def whitelist_client(whitelist, blacklist, client_username: str, srv=None):
@@ -148,27 +148,27 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
             break
         elif cmd.lower() == "/help":
             # All commmands with descriptions
-            print(help_list)
+            print(f"{bcolo.OKCYAN}" + help_list + f"{bcolo.ENDC}")
         elif cmd.lower().startswith("/clear"):
             # Cleanup Terminal
             os.system('cls' if os.name == 'nt' else 'clear')
         elif cmd.lower().startswith("/info"):
-            print("[ Node Info ]:")
-            print(f"- Unique Node ID: {get_config_key('server_unid')}")
-            print(f"- Hosted on: {get_config_key('host_ip')}:{get_config_key('host_port')}")
+            print(f"{bcolo.OKCYAN}[ Node Info ]:" + f"{bcolo.ENDC}")
+            print(f"{bcolo.OKCYAN}- Unique Node ID: {get_config_key('server_unid')}" + f"{bcolo.ENDC}")
+            print(f"{bcolo.OKGREEN}- Hosted on: {get_config_key('host_ip')}:{get_config_key('host_port')}" + f"{bcolo.ENDC}")
 
         elif cmd.lower().startswith("/list"):
             if len(connected_clients) == 0:
-                print("No clients connected to active node.")
+                print(f"{bcolo.OKCYAN}No clients connected to active node." + f"{bcolo.ENDC}")
             else:
-                print("Connected Clients: ", end="")
+                print(f"{bcolo.OKGREEN}Connected Clients: " + f"{bcolo.ENDC}", end="")
                 i = 0
                 for client in connected_clients:
                     if i == 5:
                         print(" |")
                         print("                  ", end="")
                         i = 0
-                    print(f" | {client[1]}[{client[2][0]}]", end="")
+                    print(f"{bcolo.BOLD} | {client[1]}[{client[2][0]}]" + f"{bcolo.ENDC}", end="")
                     i += 1
                 print(" |")
         elif cmd.lower().startswith("/say"):
@@ -182,7 +182,7 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
                     client[0].sendall(json.dumps(message_modded).encode())
                     LOGGING_MSG(6, f"[SENTINEL NODE]: {msg}", echoed=False)
             else:
-                print("Usage: /say <message>")
+                print(f"{bcolo.OKCYAN}Usage: /say <message>" + f"{bcolo.ENDC}")
         elif cmd.lower().startswith("/dm"):
             parts = cmd.split()
             if len(parts) > 2:
@@ -197,14 +197,14 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
                         LOGGING_MSG(6, f"[SENTINEL NODE]: {msg}", echoed=False)
                         break
             else:
-                print("Usage: /dm <username> <message>")
+                print(f"{bcolo.OKCYAN}Usage: /dm <username> <message>" + f"{bcolo.ENDC}")
 
         elif cmd.lower().startswith("/kick"):
             parts = cmd.split()
             if len(parts) > 1:
                 user_to_kick = parts[1]
                 if parts[1] == "":
-                    print("Usage: /kick <username>")
+                    print(f"{bcolo.OKCYAN}Usage: /kick <username>" + f"{bcolo.ENDC}")
                 for client in connected_clients:
                     if client[1] == user_to_kick:
                         LOGGING_MSG(1, f"Client {user_to_kick} kicked.")
@@ -214,17 +214,17 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
             # Add client to the whitelist
             parts = cmd.split(maxsplit=1)  # Split the command into two parts
             if len(parts) < 2:
-                print("Usage: /whitelist <username>")
+                print(f"{bcolo.OKCYAN}Usage: /whitelist <username>" + f"{bcolo.ENDC}")
             else:
                 if parts[1] == "list":
-                    print("Whitelisted clients: ", end="")
+                    print(f"{bcolo.OKCYAN}Whitelisted clients: " + f"{bcolo.ENDC}", end="")
                     i = 0
                     for user in whitelist:
                         if i == 5:
                             print(" |")
                             print("                     ", end="")
                             i = 0
-                        print(f" | {user}", end="")
+                        print(f"{bcolo.OKGREEN} | {user}" + f"{bcolo.ENDC}", end="")
                         i += 1
                     print(" |")
                     continue
@@ -235,7 +235,7 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
             # Add client to the blacklist @TODO: Implement
             parts = cmd.split()
             if parts[1] == "":
-                print("Usage: /blacklist <username>")
+                print(f"{bcolo.OKCYAN}Usage: /blacklist <username>" + f"{bcolo.ENDC}")
             else:
                 blacklist_client(blacklist, whitelist, parts[1], srv)
                 LOGGING_MSG(2, f"Client {parts[1]} blacklisted.")
@@ -469,7 +469,7 @@ def start_chatroom(stop_event, srv):
 
     print(f"{bcolo.OKCYAN}{sentinelnetguard_node_ascii_text}{bcolo.ENDC}")
     time.sleep(1)
-    print(help_list)
+    print(f"{bcolo.OKCYAN}help_list" + f"{bcolo.ENDC}")
 
     if not allowed_connections > 0:
         LOGGING_MSG(2, "Defaulting to 50 concurrent client connections.")
