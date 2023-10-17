@@ -68,6 +68,20 @@ def clear():
 clear()
 
 
+def get_ip():
+	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	s.settimeout(0)
+	try:
+		# doesn't even have to be reachable
+		s.connect(('10.254.254.254', 1))
+		IP = s.getsockname()[0]
+	except Exception:
+		IP = '127.0.0.1'
+	finally:
+		s.close()
+	return IP
+
+
 def pre_install_check():
     return [pre_text, part1_text, part2_text]
 
@@ -106,7 +120,7 @@ def init():
             print(pre_done[2])
 
         try:
-            set_ip = str(socket.gethostbyname())
+            set_ip = get_ip()
             print(set_ip)
         except Exception as e:
             set_ip = "0.0.0.0"
