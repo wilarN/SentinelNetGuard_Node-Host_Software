@@ -20,6 +20,7 @@ debugging = False
 pre_text = None
 part1_text = None
 part2_text = None
+whitelist_text = None
 
 i = 1
 while i < len(sys.argv):
@@ -42,6 +43,12 @@ while i < len(sys.argv):
             i += 1
         else:
             print("'-part2' argument is missing its value")
+    elif sys.argv[i] == '-whitelist':
+        if i + 1 < len(sys.argv):
+            whitelist_text = sys.argv[i + 1]
+            i += 1
+        else:
+            print("'-whitelist' argument is missing its value")
     else:
         print(f"Unknown argument: {sys.argv[i]}")
 
@@ -76,7 +83,7 @@ def get_ip():
 		s.connect(('10.254.254.254', 1))
 		IP = s.getsockname()[0]
 	except Exception:
-		IP = '127.0.0.1'
+		IP = '0.0.0.0'
 	finally:
 		s.close()
 	return IP
@@ -192,7 +199,7 @@ def main_node_func(stopping_event, srv):
 
 def main():
     init()
-    srv = useful.local_server(unid="test", owner="test", lifetime=0, destruct_time=-1)
+    srv = useful.local_server(unid="test", owner="test", lifetime=0, destruct_time=-1, whitelist_text)
     local_logging.LOGGING_MSG(1, "Server created.")
     time.sleep(0)
     # srv.update_local_cfg()

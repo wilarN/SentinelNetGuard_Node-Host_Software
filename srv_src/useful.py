@@ -15,7 +15,7 @@ cfg_file_path = "/opt/SentinelNetGuard/config.json"
 #cfg_file_path = "config.json"
 
 class local_server:
-    def __init__(self, unid="null", owner="null", lifetime=0, destruct_time=-1):
+    def __init__(self, unid="null", owner="null", lifetime=0, destruct_time=-1, pre_whitelist: list = []):
         # Deusctruction time -1 == infinite alive_t
         self.unid = unid
         self.owner = owner
@@ -28,6 +28,7 @@ class local_server:
         self.server_url = "localhost"
         self.active = False
         self.whitelist_enabled = True
+        self.pre_whitelist = pre_whitelist
 
         # Get whitelist
         self.whitelist = self.get_whitelist()
@@ -35,6 +36,10 @@ class local_server:
         if not os.path.exists(whitelist_file_path):
             with open(whitelist_file_path, "w") as f:
                 f.write("")
+
+        # Add pre-whitelist to whitelist
+        for user in self.pre_whitelist:
+            self.add_to_whitelist(user)
 
     def get_whitelist_enabled(self):
         return self.whitelist_enabled
