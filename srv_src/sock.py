@@ -320,7 +320,7 @@ def receive_messages(conn, addr, connected_clients, stop_event, whitelist, black
             conn.sendall(json.dumps(msg).encode())
 
             # Further communication
-            while True:
+            while not stop_event.is_set():
                 # BUFFER_SIZE --> buffer size.
                 data = conn.recv(BUFFER_SIZE)
                 message_gotten = json.loads(data)["data"]
