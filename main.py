@@ -1,4 +1,6 @@
 import os
+import socket
+
 from srv_src import local_logging, useful, sock
 from json import dumps
 from os import path, remove
@@ -102,11 +104,19 @@ def init():
             new_placeholder2 = pre_done[2]
             print(pre_done[1])
             print(pre_done[2])
+
+        try:
+            set_ip = str(socket.gethostbyname())
+            print(set_ip)
+        except Exception as e:
+            set_ip = "0.0.0.0"
+            print(e)
+
         config_file_structure = {
             "#__INFORMATION__#": "ANTELLO NODE CONFIG FILE --> DO NOT MESS WITH VALUES YOU DONT KNOW WHAT THEY DO.",
             "server_unid": f"{new_placeholder}",
             "private_key": f"{new_placeholder2}",
-            "host_ip": "0.0.0.0",
+            "host_ip": f"{set_ip}",
             "host_port": "59923",
             "init_join_msg": "Welcome to this SentinelNetGuard node! /help for help.",
             "first_run": "false",
