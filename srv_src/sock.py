@@ -1,4 +1,3 @@
-import base64
 import json
 import os
 import signal
@@ -6,10 +5,10 @@ import socket
 import threading
 import time
 
-from .local_logging import LOGGING_MSG
+from .local_logging import LOGGING_MSG, bcolors as bcolo
 from .useful import get_config_key
 
-antello_node_ascii_text = \
+sentinelnetguard_node_ascii_text = \
     """   _____            __  _            ___   __     __  ______                     ___   __          __   
   / ___/___  ____  / /_(_____  ___  / / | / ___  / /_/ ______  ______ __________/ / | / ____  ____/ ___ 
   \\__ \\/ _ \\/ __ \\/ __/ / __ \\/ _ \\/ /  |/ / _ \\/ __/ / __/ / / / __ `/ ___/ __  /  |/ / __ \\/ __  / _ \\
@@ -28,7 +27,7 @@ help_list = """Node Host Commands:
 /whitelist list          - Lists all whitelisted clients
 /blacklist <username>    - Bans a client from the server"""
 
-# Global flag to stop the server
+
 stop_server = False
 
 terminal_prefix = "~$: "
@@ -468,7 +467,7 @@ def start_chatroom(stop_event, srv):
 
     allowed_connections = int(get_config_key("allowed_concurrent_connections"))
 
-    print(antello_node_ascii_text)
+    print(f"{bcolo.OKCYAN}{sentinelnetguard_node_ascii_text}{bcolo.ENDC}")
     time.sleep(1)
     print(help_list)
 
@@ -479,7 +478,7 @@ def start_chatroom(stop_event, srv):
     LOGGING_MSG(1, f"Allowing {allowed_connections} concurrent client connections.")
     time.sleep(0.3)
     LOGGING_MSG(1, f"Host started on {host}:{port}")
-    LOGGING_MSG(5, "[ Welcome to the Antello Node Terminal! /help if you need help. ]")
+    LOGGING_MSG(5, "[ Welcome to the SentinelNetGuard Node Terminal! /help if you need help. ]")
     time.sleep(0.5)
     print(f"- Unique Node ID: {get_config_key('server_unid')}")
     print(f"- Hosted on: {get_config_key('host_ip')}:{get_config_key('host_port')}")

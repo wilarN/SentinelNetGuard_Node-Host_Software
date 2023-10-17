@@ -133,7 +133,7 @@ def init():
             print(e)
 
         config_file_structure = {
-            "#__INFORMATION__#": "ANTELLO NODE CONFIG FILE --> DO NOT MESS WITH VALUES YOU DONT KNOW WHAT THEY DO.",
+            "#__INFORMATION__#": "SENTINELNETGUARD NODE CONFIG FILE --> DO NOT MESS WITH VALUES YOU DONT KNOW WHAT THEY DO.",
             "server_unid": f"{new_placeholder}",
             "private_key": f"{new_placeholder2}",
             "host_ip": f"{set_ip}",

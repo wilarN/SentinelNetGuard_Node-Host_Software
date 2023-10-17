@@ -6,13 +6,9 @@ import requests
 path = ""
 # ex. "public/"
 
-# @REMEMBER fix logging here
 
 whitelist_file_path = "/opt/SentinelNetGuard/whitelist.txt"
 cfg_file_path = "/opt/SentinelNetGuard/config.json"
-
-#whitelist_file_path = "whitelist.txt"
-#cfg_file_path = "config.json"
 
 
 class local_server:
@@ -157,8 +153,6 @@ class local_server:
         """
         Get node information from webserver callback.
         """
-        # Use requests to get node info from api callback
-        # http://localhost/antello/public/create.php?auth=ghwhs907fy3vj7890fmw7vh387r3h8f7h3d&srv_host_callback=true&unid=node_instance_65181a699c889&pkey=icoimf42cskplw225gjyn9i9nabze3p3jndjbs37ej4sxwhp4ws3u7pm9n6a9otq
 
         # Get private key and unid from cfg
         priv_key = get_config_key("private_key")
@@ -218,7 +212,6 @@ class local_server:
         """
 
         # LOGGING_MSG(1, "Server " + self.unid + " is being deleted.")
-        # Detele object
         del self
 
     def update_local_cfg(self):
@@ -233,9 +226,6 @@ class local_server:
             write_to_config_key("node_admins", str(self.node_admins))
         except Exception as e:
             print(e)
-
-    def refresh_connected_users(self):
-        pass
 
 
 def write_to_config_key(key: str, value: str):
