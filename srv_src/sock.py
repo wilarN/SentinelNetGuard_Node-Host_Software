@@ -469,7 +469,7 @@ def start_chatroom(stop_event, srv):
 
     print(f"{bcolo.OKCYAN}{sentinelnetguard_node_ascii_text}{bcolo.ENDC}")
     time.sleep(1)
-    print(f"{bcolo.OKCYAN}help_list" + f"{bcolo.ENDC}")
+    print(f"{bcolo.OKCYAN}" + help_list + f"{bcolo.ENDC}")
 
     if not allowed_connections > 0:
         LOGGING_MSG(2, "Defaulting to 50 concurrent client connections.")
