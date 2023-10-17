@@ -15,7 +15,7 @@ cfg_file_path = "/opt/SentinelNetGuard/config.json"
 #cfg_file_path = "config.json"
 
 class local_server:
-    def __init__(self, unid="null", owner="null", lifetime=0, destruct_time=-1, pre_whitelist: list = []):
+    def __init__(self, unid="null", owner="null", lifetime=0, destruct_time=-1, pre_whitelist = []):
         # Deusctruction time -1 == infinite alive_t
         self.unid = unid
         self.owner = owner
