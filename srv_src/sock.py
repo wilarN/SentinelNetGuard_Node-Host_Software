@@ -15,6 +15,7 @@ sentinelnetguard_node_ascii_text = \
  ___/ /  __/ / / / /_/ / / / /  __/ / /|  /  __/ /_/ /_/ / /_/ / /_/ / /  / /_/ / /|  / /_/ / /_/ /  __/
 /____/\\___/_/ /_/\\__/_/_/ /_/\\___/_/_/ |_/\\___/\\__/\\____/\\__,_/\\__,_/_/   \\__,_/_/ |_/\\____/\\__,_/\\___/"""
 
+
 help_list = """Node Host Commands:
 /stop                    - Stops the node
 /help                    - Lists all commands
@@ -26,7 +27,6 @@ help_list = """Node Host Commands:
 /whitelist <username>    - Invites a client to the server
 /whitelist list          - Lists all whitelisted clients
 /blacklist <username>    - Bans a client from the server"""
-
 
 stop_server = False
 
@@ -155,7 +155,8 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
         elif cmd.lower().startswith("/info"):
             print(f"{bcolo.OKCYAN}[ Node Info ]:" + f"{bcolo.ENDC}")
             print(f"{bcolo.OKCYAN}- Unique Node ID: {get_config_key('server_unid')}" + f"{bcolo.ENDC}")
-            print(f"{bcolo.OKGREEN}- Hosted on: {get_config_key('host_ip')}:{get_config_key('host_port')}" + f"{bcolo.ENDC}")
+            print(
+                f"{bcolo.OKGREEN}- Hosted on: {get_config_key('host_ip')}:{get_config_key('host_port')}" + f"{bcolo.ENDC}")
 
         elif cmd.lower().startswith("/list"):
             if len(connected_clients) == 0:
@@ -426,8 +427,12 @@ def start_chatroom(stop_event, srv):
 
     if srv.update_global_host_info():
         LOGGING_MSG(1, "IP and PORT online.")
-        if get_config_key("server_owner") not in srv.get_whitelist():
-            srv.add_to_whitelist(get_config_key("server_owner"))
+        try:
+            if get_config_key("server_owner") not in srv.get_whitelist():
+                srv.add_to_whitelist(get_config_key("server_owner"))
+        except Exception as e:
+            LOGGING_MSG(3, f"{e}")
+            LOGGING_MSG(3, "Unable to add server owner to whitelist. Make sure you've set it manually in the cfg if you didnt use the pre-setup-script.")
     else:
         LOGGING_MSG(2, "Unable to set IP and PORT online but proceeding anyway...")
         LOGGING_MSG(2, "Clients may have connection issues, please review your cfg and try again.")
@@ -466,7 +471,6 @@ def start_chatroom(stop_event, srv):
         whitelist.append(user)
 
     allowed_connections = int(get_config_key("allowed_concurrent_connections"))
-
     print(f"{bcolo.OKCYAN}{sentinelnetguard_node_ascii_text}{bcolo.ENDC}")
     time.sleep(1)
     print(f"{bcolo.OKCYAN}" + help_list + f"{bcolo.ENDC}")
