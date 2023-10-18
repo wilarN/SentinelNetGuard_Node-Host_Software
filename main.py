@@ -175,6 +175,9 @@ def init():
         else:
             local_logging.LOGGING_MSG(1, "Config file set automatically from pre-initialization.")
             time.sleep(1)
+            local_logging.LOGGING_MSG(2, "File configured automatically. To start up the node, run the command ´sennet --start´. \n"
+                                         "For more info run ´sennet´ or visit the github page.")
+            exit(0)
 
     # End of init
     local_logging.LOGGING_MSG(1, "Server initialized.")
