@@ -126,7 +126,8 @@ class local_server:
         """
         Get ip and port from cfg and contact webserver
         """
-        specified_ip = get_config_key("public_ip")
+        specified_ip_pub = get_config_key("public_ip")
+        specified_ip_internal = get_config_key("host_ip")
         specified_port = get_config_key("host_port")
 
         url_actual = get_config_key("server_url")
@@ -138,7 +139,7 @@ class local_server:
         whitelist = ",".join(whitelist)
 
         successful = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&global_update=true&unid={unid}&priv_key={priv_key}&ip={specified_ip}&port={specified_port}&whitelist={whitelist}")
+            f"https://{url_actual}/{path}create.php?auth={callback_type}&global_update=true&unid={unid}&priv_key={priv_key}&ip_pub={specified_ip_pub}&ip_internal={specified_ip_internal}&port={specified_port}&whitelist={whitelist}")
         # Convert response to json
         # print(successful)
         # print(successful.text)
