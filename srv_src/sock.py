@@ -15,7 +15,6 @@ sentinelnetguard_node_ascii_text = \
  ___/ /  __/ / / / /_/ / / / /  __/ / /|  /  __/ /_/ /_/ / /_/ / /_/ / /  / /_/ / /|  / /_/ / /_/ /  __/
 /____/\\___/_/ /_/\\__/_/_/ /_/\\___/_/_/ |_/\\___/\\__/\\____/\\__,_/\\__,_/_/   \\__,_/_/ |_/\\____/\\__,_/\\___/"""
 
-
 help_list = """Node Host Commands:
 /stop                    - Stops the node
 /help                    - Lists all commands
@@ -427,12 +426,7 @@ def start_chatroom(stop_event, srv):
 
     if srv.update_global_host_info():
         LOGGING_MSG(1, "IP and PORT online.")
-        try:
-            if get_config_key("server_owner") not in srv.get_whitelist():
-                srv.add_to_whitelist(get_config_key("server_owner"))
-        except Exception as e:
-            LOGGING_MSG(3, f"{e}")
-            LOGGING_MSG(3, "Unable to add server owner to whitelist. Make sure you've set it manually in the cfg if you didnt use the pre-setup-script.")
+
     else:
         LOGGING_MSG(2, "Unable to set IP and PORT online but proceeding anyway...")
         LOGGING_MSG(2, "Clients may have connection issues, please review your cfg and try again.")
@@ -462,6 +456,17 @@ def start_chatroom(stop_event, srv):
 
     if srv.get_whitelist_enabled():
         LOGGING_MSG(1, "Whitelist enabled.")
+
+        try:
+            usnrm = get_config_key("server_owner")
+            if usnrm not in srv.get_whitelist():
+                whitelist_client(whitelist, blacklist, usnrm, srv)
+                LOGGING_MSG(2, f"Client '{usnrm}' whitelisted.")
+        except Exception as e:
+            LOGGING_MSG(3, f"{e}")
+            LOGGING_MSG(3,
+                        "Unable to add server owner to whitelist. Make sure you've set it manually in the cfg if you didnt use the pre-setup-script.")
+
     else:
         LOGGING_MSG(2, "Whitelist disabled in cfg... Unsafe option!!")
         time.sleep(2)
