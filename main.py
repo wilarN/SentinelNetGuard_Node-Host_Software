@@ -76,23 +76,27 @@ clear()
 
 
 def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(0)
+    try:
+        s.connect(('10.254.254.254', 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '0.0.0.0'
+    finally:
+        s.close()
+    return IP
+
+
+def get_pub_ip():
     try:
         r = useful.requests.get("https://am.i.mullvad.net/ip")
         # Remove new line
         r = r.text.replace("\n", "")
         return r
     except Exception as e:
-        print(e)
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.settimeout(0)
-        try:
-            s.connect(('10.254.254.254', 1))
-            IP = s.getsockname()[0]
-        except Exception:
-            IP = '0.0.0.0'
-        finally:
-            s.close()
-        return IP
+        local_logging.LOGGING_MSG(3, f"Failed to get public ip: {e}")
+        return False
 
 
 def pre_install_check():
@@ -139,11 +143,20 @@ def init():
             set_ip = "0.0.0.0"
             print(e)
 
+        try:
+            set_pub_ip = get_pub_ip()
+            if not set_pub_ip:
+                set_pub_ip = set_ip
+            print(set_pub_ip)
+        except Exception as e:
+            set_pub_ip = set_ip
+
         config_file_structure = {
             "#__INFORMATION__#": "SENTINELNETGUARD NODE CONFIG FILE --> DO NOT MESS WITH VALUES YOU DONT KNOW WHAT THEY DO.",
             "server_unid": f"{new_placeholder}",
             "private_key": f"{new_placeholder2}",
             "host_ip": f"{set_ip}",
+            "public_ip": f"{set_pub_ip}",
             "host_port": "59923",
             "init_join_msg": "Welcome to this SentinelNetGuard node! /help for help.",
             "first_run": "false",
@@ -182,8 +195,9 @@ def init():
         else:
             local_logging.LOGGING_MSG(1, "Config file set automatically from pre-initialization.")
             time.sleep(1)
-            local_logging.LOGGING_MSG(2, "File configured automatically. To start up the node, run the command ´sennet --start´. \n"
-                                         "For more info run ´sennet´ or visit the github page.")
+            local_logging.LOGGING_MSG(2,
+                                      "File configured automatically. To start up the node, run the command ´sennet --start´. \n"
+                                      "For more info run ´sennet´ or visit the github page.")
             exit(0)
 
     # End of init

@@ -126,7 +126,7 @@ class local_server:
         """
         Get ip and port from cfg and contact webserver
         """
-        specified_ip = get_config_key("host_ip")
+        specified_ip = get_config_key("public_ip")
         specified_port = get_config_key("host_port")
 
         url_actual = get_config_key("server_url")
