@@ -76,16 +76,21 @@ clear()
 
 
 def get_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.settimeout(0)
     try:
-        s.connect(('10.254.254.254', 1))
-        IP = s.getsockname()[0]
-    except Exception:
-        IP = '0.0.0.0'
-    finally:
-        s.close()
-    return IP
+        r = useful.requests.get("https://am.i.mullvad.net/ip")
+        return r.text
+    except Exception as e:
+        print(e)
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(0)
+        try:
+            s.connect(('10.254.254.254', 1))
+            IP = s.getsockname()[0]
+        except Exception:
+            IP = '0.0.0.0'
+        finally:
+            s.close()
+        return IP
 
 
 def pre_install_check():
