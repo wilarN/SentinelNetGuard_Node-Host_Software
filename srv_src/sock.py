@@ -178,7 +178,6 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
                 msg = parts[1]
                 for i in range(2, len(parts)):
                     msg += f" {parts[i]}"
-                    msg += f" {parts[i]}"
                 for client in connected_clients:
                     message_modded = message_data_mod("[SENTINEL NODE]", msg)
                     client[0].sendall(json.dumps(message_modded).encode())
