@@ -44,7 +44,7 @@ BUFFER_SIZE = 1024
 
 
 def terminal_prefix_fixer():
-    print(f"{bcolo.OKCYAN}" + terminal_prefix + f"{bcolo.ENDC}", end="")
+    print(f"\n{bcolo.OKCYAN}" + terminal_prefix + f"{bcolo.ENDC}", end="")
 
 
 def whitelist_client(whitelist, blacklist, client_username: str, srv=None):
