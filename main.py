@@ -78,7 +78,9 @@ clear()
 def get_ip():
     try:
         r = useful.requests.get("https://am.i.mullvad.net/ip")
-        return r.text
+        # Remove new line
+        r = r.text.replace("\n", "")
+        return r
     except Exception as e:
         print(e)
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
