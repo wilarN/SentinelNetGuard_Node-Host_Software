@@ -1,14 +1,38 @@
 #!/bin/bash
-CUSTOM_COMMAND="sennet" # sng for SentinelNetGuard
+CUSTOM_COMMAND="sennet" # sennet for ´SentinelNet´(Guard).
 show_help() {
-  echo "Usage: $CUSTOM_COMMAND [--start]"
+  echo "Usage: $CUSTOM_COMMAND [--start|--stop|--kill]"
   echo "Options:"
-  echo "  --start   Start the node."
+  echo "  --start   Start the SentinelNetGuard Node."
+  echo "  --stop    Attempt a graceful stop of the SentinelNetGuard Node."
+  echo "            This may not always work; use --kill if the process is unresponsive."
+  echo "  --kill    Forcefully kill the SentinelNetGuard Node by terminating the process using port 59923."
 }
+
 case "$1" in
   --start)
     echo "Starting the SentinelNetGuard Node..."
     python3 /opt/SentinelNetGuard/main.py
+    ;;
+  --stop)
+    echo "Stopping the SentinelNetGuard Node..."
+    PID=$(lsof -t -i :59923)
+    if [ -n "$PID" ]; then
+      kill -9 "$PID"
+      echo "SentinelNetGuard Node has been stopped."
+    else
+      echo "No process found using port 59923."
+    fi
+    ;;
+  --kill)
+    echo "Forcefully stopping the SentinelNetGuard Node..."
+    PID=$(lsof -t -i :59923)
+    if [ -n "$PID" ]; then
+      kill "$PID"
+      echo "SentinelNetGuard Node has been stopped."
+    else
+      echo "No process found using port 59923."
+    fi
     ;;
   *)
     show_help
