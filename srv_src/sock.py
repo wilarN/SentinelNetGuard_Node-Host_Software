@@ -146,7 +146,8 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
             LOGGING_MSG(1, "Node socket closed.")
             stop_event.set()
             LOGGING_MSG(1, "Stopping event set.")
-            break
+            # break
+            exit(0)
         elif cmd.lower() == "/help":
             # All commmands with descriptions
             print(f"{bcolo.OKCYAN}" + help_list + f"{bcolo.ENDC}")
@@ -451,7 +452,7 @@ def get_self_del_thread(stop_event, srv):
     """
     while not stop_event.is_set():
         if srv.get_lifetime() > 0:
-            pass
+            srv.dec_lifetime()
         else:
             if srv.get_lifetime() < 0:
                 LOGGING_MSG(2, "[END] Node is burnt, shutting down...")
