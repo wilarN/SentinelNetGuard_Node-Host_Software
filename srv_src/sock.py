@@ -454,7 +454,7 @@ def get_self_del_thread(stop_event, srv):
         if srv.get_lifetime() > 0:
             srv.dec_lifetime()
         else:
-            if srv.get_lifetime() < 0:
+            if srv.get_lifetime() <= 0:
                 LOGGING_MSG(2, "[END] Node is burnt, shutting down...")
                 result = srv.destruct()
                 if result:

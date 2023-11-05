@@ -12,7 +12,7 @@ cfg_file_path = "/opt/SentinelNetGuard/config.json"
 
 
 class local_server:
-    def __init__(self, pre_whitelist=None, unid="null", owner="null", lifetime=1, destruct_time=-1):
+    def __init__(self, pre_whitelist=None, unid="null", owner="null", lifetime=3600, destruct_time=-1):
         # Destruction time -1 == infinite alive_t
         if pre_whitelist is None:
             pre_whitelist = []
@@ -30,7 +30,7 @@ class local_server:
         self.pre_whitelist = pre_whitelist
 
         if self.lifetime == 0:
-            self.lifetime = 1
+            self.lifetime = 3600
 
         # Get whitelist
         self.whitelist = self.get_whitelist()
@@ -112,6 +112,8 @@ class local_server:
         write_to_config_key("server_lifetime", str(new_lifetime))
 
     def extend_node_lifetime(self, time_to_extend: int):
+        # Hours to seconds
+        time_to_extend = time_to_extend * 3600
         cur_lifetime = self.lifetime
         new_lifetime = cur_lifetime + time_to_extend
         self.lifetime = new_lifetime
