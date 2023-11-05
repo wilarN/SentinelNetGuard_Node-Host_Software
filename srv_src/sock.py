@@ -226,6 +226,25 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
                 srv.extend_node_lifetime(time_to_extend=time_to_extend)
                 LOGGING_MSG(1, f"Node lifetime extended by {time_to_extend} hours.")
                 terminal_prefix_fixer()
+        elif cmd.lower().startswith("/shorten"):
+            # Shorten in seconds
+            parts = cmd.split()
+            if len(parts) > 1:
+                time_to_shorten = parts[1]
+                if time_to_shorten == "":
+                    time_to_shorten = 1
+                try:
+                    time_to_shorten = int(time_to_shorten)
+                except ValueError:
+                    print(f"{bcolo.OKCYAN}Usage: /shorten <time>[s]" + f"{bcolo.ENDC}")
+                    continue
+                if time_to_shorten <= 0:
+                    print(f"{bcolo.OKCYAN}Usage: /shorten <time>[s]" + f"{bcolo.ENDC}")
+                    continue
+                srv.shorten_node_lifetime(time_to_shorten=time_to_shorten)
+                LOGGING_MSG(1, f"Node lifetime shortened by {time_to_shorten} seconds.")
+                LOGGING_MSG(1, f"New node lifetime: {srv.get_lifetime()}")
+                terminal_prefix_fixer()
 
         elif cmd.lower().startswith("/kick"):
             parts = cmd.split()

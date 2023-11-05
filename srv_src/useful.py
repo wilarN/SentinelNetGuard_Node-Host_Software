@@ -111,6 +111,12 @@ class local_server:
         self.lifetime = new_lifetime
         write_to_config_key("server_lifetime", str(new_lifetime))
 
+    def shorten_node_lifetime(self, time_to_shorten: int):
+        cur_lifetime = self.lifetime
+        new_lifetime = cur_lifetime - time_to_shorten
+        self.lifetime = new_lifetime
+        write_to_config_key("server_lifetime", str(new_lifetime))
+
     def extend_node_lifetime(self, time_to_extend: int):
         # Hours to seconds
         time_to_extend = time_to_extend * 3600
