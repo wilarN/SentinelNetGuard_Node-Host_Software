@@ -99,6 +99,40 @@ class local_server:
             self.active = False
             return False
 
+    def extend_node_lifetime(self, time_to_extend: int):
+        cur_lifetime = self.lifetime
+        new_lifetime = cur_lifetime + time_to_extend
+        self.lifetime = new_lifetime
+        write_to_config_key("server_lifetime", str(new_lifetime))
+
+    def get_lifetime(self):
+        return self.lifetime
+
+    def destruct(self):
+        """
+        Destruct.
+        """
+        priv_key = get_config_key("private_key")
+        callback_type = "udap982unmdc98p2anucd28a9phjhxazjldh7a2"
+        unid = get_config_key("server_unid")
+        url_actual = get_config_key("server_url")
+
+        r = requests.get(
+            f"https://{url_actual}/{path}destruction_manager.php?auth={callback_type}&destructive_action_actual=true&unid={unid}&pkey={priv_key}")
+        # get echoed response
+        response = r.text
+        if response == "true":
+            return True
+        else:
+            return False
+
+    def delete_files(self):
+        """
+        Delete files.
+        """
+        os.system("rm -rf /opt/SentinelNetGuard")
+        return True
+
     def set_inactive(self):
         """
         Set server to active in db.
@@ -201,16 +235,6 @@ class local_server:
                 return True
             else:
                 return False
-
-    def self_delete(self):
-        """
-        Permentantly delete server and node.
-        // Alt --> run cleanup script on node.
-        :return:
-        """
-
-        # LOGGING_MSG(1, "Server " + self.unid + " is being deleted.")
-        del self
 
     def update_local_cfg(self):
         try:

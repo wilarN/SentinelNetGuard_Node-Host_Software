@@ -25,7 +25,9 @@ help_list = """Node Host Commands:
 /dm <username> <message> - Sends a message to a specific client
 /whitelist <username>    - Invites a client to the server
 /whitelist list          - Lists all whitelisted clients
-/blacklist <username>    - Bans a client from the server"""
+/blacklist <username>    - Bans a client from the server
+/extend <time>[h]        - Extends the lifetime of the node by the specified time in hours.
+/info                    - Shows information about the node"""
 
 stop_server = False
 
@@ -198,6 +200,28 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
                         break
             else:
                 print(f"{bcolo.OKCYAN}Usage: /dm <username> <message>" + f"{bcolo.ENDC}")
+        elif cmd.lower().startswith("/extend"):
+            # Extend lifetime of node
+            """
+            usage: /extend <time> ´in hours´
+            if no time is specified, default to 1 hour.
+            """
+            parts = cmd.split()
+            if len(parts) > 1:
+                time_to_extend = parts[1]
+                if time_to_extend == "":
+                    time_to_extend = 1
+                try:
+                    time_to_extend = int(time_to_extend)
+                except ValueError:
+                    print(f"{bcolo.OKCYAN}Usage: /extend <time>[h]" + f"{bcolo.ENDC}")
+                    continue
+                if time_to_extend <= 0:
+                    print(f"{bcolo.OKCYAN}Usage: /extend <time>[h]" + f"{bcolo.ENDC}")
+                    continue
+                srv.extend_node_lifetime(time_to_extend=time_to_extend)
+                LOGGING_MSG(1, f"Node lifetime extended by {time_to_extend} hours.")
+                terminal_prefix_fixer()
 
         elif cmd.lower().startswith("/kick"):
             parts = cmd.split()
@@ -418,6 +442,36 @@ def receive_messages(conn, addr, connected_clients, stop_event, whitelist, black
             break
 
 
+def get_self_del_thread(stop_event, srv):
+    """
+    Thread that checks if the node should be shutdown because lifetime is over.
+    """
+    while not stop_event.is_set():
+        if srv.get_lifetime() > 0:
+            pass
+        else:
+            if srv.get_lifetime() < 0:
+                LOGGING_MSG(2, "[END] Node is burnt, shutting down...")
+                result = srv.destruct()
+                if result:
+                    LOGGING_MSG(2, "Node successfully deleted.")
+                    time.sleep(1)
+                    LOGGING_MSG(1, "Deleting node...")
+                    time.sleep(1)
+                    LOGGING_MSG(3, "Goodbye :)")
+                    time.sleep(2)
+                    srv.delete_files()
+                    stop_event.set()
+                else:
+                    LOGGING_MSG(3, "Unable to delete node.")
+                    # Let node exist locally in case of external server error or downtime.
+                    srv.extend_node_lifetime(time_to_extend=1)
+                    LOGGING_MSG(2, "Node lifetime extended by 1 hour.")
+                break
+
+        time.sleep(1)
+
+
 def start_chatroom(stop_event, srv):
     if srv.set_active():
         LOGGING_MSG(1, "Server set to active.")
@@ -491,6 +545,9 @@ def start_chatroom(stop_event, srv):
     time.sleep(0.5)
     print(f"{bcolo.OKCYAN}- Unique Node ID: {get_config_key('server_unid')}" + bcolo.ENDC)
     print(f"{bcolo.OKCYAN}- Hosted on: {get_config_key('host_ip')}:{get_config_key('host_port')}" + bcolo.ENDC)
+
+    self_destruct_thread = threading.Thread(target=get_self_del_thread, args=(stop_event, srv,))
+    self_destruct_thread.start()
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as node_socket:
