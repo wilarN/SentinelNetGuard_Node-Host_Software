@@ -158,6 +158,9 @@ def command_listener(stop_event, node_socket, connected_clients, whitelist, blac
             print(f"{bcolo.OKCYAN}- Unique Node ID: {get_config_key('server_unid')}" + f"{bcolo.ENDC}")
             print(
                 f"{bcolo.OKGREEN}- Hosted on: {get_config_key('host_ip')}:{get_config_key('host_port')}" + f"{bcolo.ENDC}")
+            print(f"{bcolo.OKGREEN}- Hosted by: {get_config_key('server_owner')}" + f"{bcolo.ENDC}")
+            print(f"{bcolo.OKGREEN}- Location: {get_config_key('location')}" + f"{bcolo.ENDC}")
+            print(f"{bcolo.OKGREEN}- Current time left: {srv.get_lifetime}" + f"{bcolo.ENDC}")
 
         elif cmd.lower().startswith("/list"):
             if len(connected_clients) == 0:
@@ -545,6 +548,9 @@ def start_chatroom(stop_event, srv):
     time.sleep(0.5)
     print(f"{bcolo.OKCYAN}- Unique Node ID: {get_config_key('server_unid')}" + bcolo.ENDC)
     print(f"{bcolo.OKCYAN}- Hosted on: {get_config_key('host_ip')}:{get_config_key('host_port')}" + bcolo.ENDC)
+    print(f"{bcolo.OKCYAN}- Hosted by: {get_config_key('server_owner')}" + bcolo.ENDC)
+    print(f"{bcolo.OKCYAN}- Location: {get_config_key('location')}" + bcolo.ENDC)
+    print(f"{bcolo.OKCYAN}- Current time left: {srv.get_lifetime}" + bcolo.ENDC)
 
     self_destruct_thread = threading.Thread(target=get_self_del_thread, args=(stop_event, srv,))
     self_destruct_thread.start()
