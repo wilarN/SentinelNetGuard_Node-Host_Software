@@ -241,7 +241,6 @@ def main():
 
     # Cleanup below
     srv.set_inactive()
-    srv.self_delete()
     local_logging.LOGGING_MSG(1, "Server object deleted.")
     time.sleep(0)
     local_logging.LOGGING_MSG(1, "[Node offline]")

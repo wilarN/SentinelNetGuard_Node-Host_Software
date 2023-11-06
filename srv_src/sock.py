@@ -27,7 +27,9 @@ help_list = """Node Host Commands:
 /whitelist list          - Lists all whitelisted clients
 /blacklist <username>    - Bans a client from the server
 /extend <time>[h]        - Extends the lifetime of the node by the specified time in hours.
-/info                    - Shows information about the node"""
+/info                    - Shows information about the node
+/shorten <time>[s]       - Shortens the lifetime of the node by the specified time in seconds(Main usage --> debug purposes).
+"""
 
 stop_server = False
 
@@ -470,10 +472,13 @@ def get_self_del_thread(stop_event, srv):
     Thread that checks if the node should be shutdown because lifetime is over.
     """
     while not stop_event.is_set():
-        if srv.get_lifetime() > 0:
+        cur_time = srv.get_lifetime()
+        if cur_time > 0:
             srv.dec_lifetime()
         else:
-            if srv.get_lifetime() <= 0:
+            if cur_time <= 10 and cur_time != 0:
+                LOGGING_MSG(3, f"Node is going to be deleted in {cur_time} seconds.")
+            if cur_time <= 0:
                 LOGGING_MSG(2, "[END] Node is burnt, shutting down...")
                 result = srv.destruct()
                 if result:
@@ -481,7 +486,7 @@ def get_self_del_thread(stop_event, srv):
                     time.sleep(1)
                     LOGGING_MSG(1, "Deleting node...")
                     time.sleep(1)
-                    LOGGING_MSG(3, "Goodbye :)")
+                    LOGGING_MSG(3, "Goodbye, Friend. :)")
                     time.sleep(2)
                     srv.delete_files()
                     stop_event.set()

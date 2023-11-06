@@ -12,6 +12,11 @@ show_help() {
 case "$1" in
   --start)
     echo "Starting the SentinelNetGuard Node..."
+    PID=$(lsof -t -i :59923)
+    echo "Attempting to kill any existing SentinelNetGuard Node process on port 59923..."
+    if [ -n "$PID" ]; then
+      echo "Killing existing SentinelNetGuard Node process on port 59923..."
+      kill "$PID"
     python3 /opt/SentinelNetGuard/main.py
     ;;
   --stop)
