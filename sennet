@@ -7,6 +7,7 @@ show_help() {
   echo "  --stop    Attempt a graceful stop of the SentinelNetGuard Node."
   echo "            This may not always work; use --kill if the process is unresponsive."
   echo "  --kill    Forcefully kill the SentinelNetGuard Node by terminating the process using port 59923."
+  echo "  --remove  Uninstall if there's currently a node installed in /opt/SentinelNetGuard/."
 }
 
 case "$1" in
@@ -19,6 +20,19 @@ case "$1" in
       kill "$PID"
     fi
     python3 /opt/SentinelNetGuard/main.py
+    ;;
+  --remove)
+    echo "Removing installation if present..."
+    PID=$(lsof -t -i :59923)
+    echo "Attempting to kill any existing SentinelNetGuard Node process on port 59923..."
+    if [ -n "$PID" ]; then
+      echo "Killing existing SentinelNetGuard Node process on port 59923..."
+      kill "$PID"
+	fi
+    echo "Attempting removal..."
+	rm -r /opt/SentinelNetGuard/
+	rm -r "/usr/local/bin/$CUSTOM_COMMAND"
+    echo "Complete..."
     ;;
   --stop)
     echo "Stopping the SentinelNetGuard Node..."
