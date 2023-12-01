@@ -211,11 +211,11 @@ class local_server:
 
         whitelist = self.get_whitelist()
         whitelist = ",".join(whitelist)
-        whilelist = "wompa -- debug"
-        time.sleep(1)
-        
+        if whitelist == "":
+            whitelist = "null"
+
         successful = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&global_update=true&unid={unid}&priv_key={priv_key}&ip_pub={specified_ip_pub}&ip_internal={specified_ip_internal}&port={specified_port}&whitelist={whitelist}")
+            f"https://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&global_update=true&unid={unid}&priv_key={priv_key}&ip_pub={specified_ip_pub}&ip_internal={specified_ip_internal}&port={specified_port}&whitelist={whitelist}")
         # Convert response to json
         # print(successful)
         # print(successful.text)
