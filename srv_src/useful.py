@@ -211,9 +211,9 @@ class local_server:
 
         whitelist = self.get_whitelist()
         whitelist = ",".join(whitelist)
-        print(f"AAAAAAAAAAAAAAA:{whitelist}")
-        time.sleep(5)
-
+        whilelist = "wompa -- debug"
+        time.sleep(1)
+        
         successful = requests.get(
             f"https://{url_actual}/{path}create.php?auth={callback_type}&global_update=true&unid={unid}&priv_key={priv_key}&ip_pub={specified_ip_pub}&ip_internal={specified_ip_internal}&port={specified_port}&whitelist={whitelist}")
         # Convert response to json
