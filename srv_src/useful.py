@@ -102,6 +102,26 @@ class local_server:
             self.active = False
             return False
 
+    def get_predefined_whitelist(self):
+        """
+        Get Predefined whitelist directly from DB.
+        """
+        # Get private key and unid from cfg
+        priv_key = get_config_key("private_key")
+        callback_type = "dfdwanh2a9ofdha2ohdfusiaolnfdgwoai"
+        unid = get_config_key("server_unid")
+        url_actual = get_config_key("server_url")
+
+        r = requests.get(
+            f"https://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
+        # get echoed response
+        response = r.text
+
+        if response == "false":
+            return False
+        else:
+            return response
+
     def dec_lifetime(self):
         """
         Decrement lifetime by 1.

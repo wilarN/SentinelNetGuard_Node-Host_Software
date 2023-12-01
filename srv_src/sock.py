@@ -538,7 +538,6 @@ def start_chatroom(stop_event, srv):
 
     if srv.get_whitelist_enabled():
         LOGGING_MSG(1, "Whitelist enabled.")
-
         try:
             usnrm = get_config_key("server_owner")
             if usnrm not in srv.get_whitelist():
@@ -548,6 +547,21 @@ def start_chatroom(stop_event, srv):
             LOGGING_MSG(3, f"{e}")
             LOGGING_MSG(3,
                         "Unable to add server owner to whitelist. Make sure you've set it manually in the cfg if you didnt use the pre-setup-script.")
+        # Whitelist Pre-Defined users
+        try:
+            results = srv.get_predefined_whitelist()
+            if not results:
+                LOGGING_MSG(2, "No pre-defined users found or failed to fetch.")
+            else:
+                users = results.split(",")
+                for user in users:
+                    if user not in srv.get_whitelist():
+                        whitelist_client(whitelist, blacklist, user, srv)
+                        LOGGING_MSG(2, f"Client '{user}' whitelisted.")
+
+        except Exception as e:
+            LOGGING_MSG(3, f"{e}")
+            LOGGING_MSG(3, "Unable to add pre-defined users to whitelist.")
 
     else:
         LOGGING_MSG(2, "Whitelist disabled in cfg... Unsafe option!!")
