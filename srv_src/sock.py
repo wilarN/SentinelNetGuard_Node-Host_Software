@@ -554,10 +554,9 @@ def start_chatroom(stop_event, srv):
                 LOGGING_MSG(2, "No pre-defined users found or failed to fetch.")
             else:
                 users = results.split(",")
-                if users[0] != "null":
-                    LOGGING_MSG(2, "No pre-defined users found.")
+                existing = srv.get_whitelist()
                 for user in users:
-                    if user not in srv.get_whitelist():
+                    if user not in existing:
                         whitelist_client(whitelist, blacklist, user, srv)
                         LOGGING_MSG(2, f"Client '{user}' whitelisted.")
 
