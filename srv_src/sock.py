@@ -489,7 +489,6 @@ def get_self_del_thread(stop_event, srv):
                     LOGGING_MSG(3, "Goodbye, Friend. :)")
                     time.sleep(2)
                     srv.delete_files()
-                    exit(0)
                 else:
                     LOGGING_MSG(3, "Unable to delete node.")
                     # Let node exist locally in case of external server error or downtime.

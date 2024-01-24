@@ -173,7 +173,7 @@ class local_server:
         Delete files.
         """
         os.system("rm -rf /opt/SentinelNetGuard")
-        return True
+        exit(0)
 
     def set_inactive(self):
         """
