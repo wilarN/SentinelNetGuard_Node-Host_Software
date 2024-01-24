@@ -134,6 +134,8 @@ class local_server:
     def shorten_node_lifetime(self, time_to_shorten: int):
         cur_lifetime = self.lifetime
         new_lifetime = cur_lifetime - time_to_shorten
+        if new_lifetime <= 0:
+            new_lifetime = 1
         self.lifetime = new_lifetime
         write_to_config_key("server_lifetime", str(new_lifetime))
 
