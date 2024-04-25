@@ -168,7 +168,7 @@ def init():
             "server_lifetime": "0",
             "server_destruct_time": "-1",
             "allowed_concurrent_connections": "50",
-            "server_url": "sentinelnet.xyz",
+            "server_url": "sng.meltrasense.com",
             "whitelist": "true"
         }
 
