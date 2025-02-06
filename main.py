@@ -9,7 +9,7 @@ import time
 import sys
 
 """
-Copyright © William Johnsson 2022-2024 
+Copyright © William Johnsson 2022-2025 
 
 This code is protected by copyright law. No license is granted. Unauthorized use, modification, or distribution is prohibited.
 Contact https://github.com/wilarN for more information.

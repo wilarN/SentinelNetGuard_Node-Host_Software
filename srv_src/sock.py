@@ -8,6 +8,8 @@ import time
 from .local_logging import LOGGING_MSG, bcolors as bcolo
 from .useful import get_config_key
 
+# https://github.com/freedomofpress/signal-protocol potential contestant
+
 sentinelnetguard_node_ascii_text = \
     """   _____            __  _            ___   __     __  ______                     ___   __          __   
   / ___/___  ____  / /_(_____  ___  / / | / ___  / /_/ ______  ______ __________/ / | / ____  ____/ ___ 
