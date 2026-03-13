@@ -22,6 +22,8 @@ part1_text = None
 part2_text = None
 whitelist_text = None
 
+server_host_endpoint = "sng.meltrasense.com"
+
 i = 1
 while i < len(sys.argv):
     # Debug?
@@ -154,6 +156,10 @@ def init():
         except Exception as e:
             set_pub_ip = set_ip
 
+        if debugging:
+            local_logging.LOGGING_MSG(2, "Setting server host endpoint to localhost since debugging is enabled.")
+            server_host_endpoint = "localhost"
+
         config_file_structure = {
             "#__INFORMATION__#": "SENTINELNETGUARD NODE CONFIG FILE --> DO NOT MESS WITH VALUES YOU DONT KNOW WHAT THEY DO.",
             "server_unid": f"{new_placeholder}",
@@ -171,7 +177,7 @@ def init():
             "server_lifetime": "0",
             "server_destruct_time": "-1",
             "allowed_concurrent_connections": "50",
-            "server_url": "sng.meltrasense.com",
+            "server_url": f"{server_host_endpoint}",
             "whitelist": "true"
         }
 

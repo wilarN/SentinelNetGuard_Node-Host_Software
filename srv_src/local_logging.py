@@ -13,7 +13,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-logging_file_path = "/opt/SentinelNetGuard/log.log"
+logging_file_path = "/var/log/sentinelnetguard/log.log"
 
 
 def LOGGING_MSG(type:int, message: str, echoed: bool = True):
