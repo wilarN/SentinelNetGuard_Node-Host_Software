@@ -21,6 +21,9 @@ def LOGGING_MSG(type:int, message: str, echoed: bool = True):
     Custom logging function. Writes to log.log file and prints to console.
     :param type: 1 = info, 2 = warning, 3 = error, 4 = fatal, 5 = attention, 6 = node client messages
     """
+    os.makedirs(os.path.dirname(logging_file_path), exist_ok=True)
+
+
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     try:
