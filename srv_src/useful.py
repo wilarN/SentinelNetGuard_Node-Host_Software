@@ -12,7 +12,7 @@ cfg_file_path = "/opt/SentinelNetGuard/config.json"
 
 
 class local_server:
-    def __init__(self, pre_whitelist=None, unid="null", owner="null", lifetime=3600, destruct_time=-1):
+    def __init__(self, pre_whitelist=None, unid="null", owner="null", lifetime=3600, destruct_time=-1, debugging=False):
         # Destruction time -1 == infinite alive_t
         if pre_whitelist is None:
             pre_whitelist = []
@@ -28,6 +28,7 @@ class local_server:
         self.active = False
         self.whitelist_enabled = True
         self.pre_whitelist = pre_whitelist
+        self.debugging = debugging
 
         if self.lifetime == 0:
             self.lifetime = 3600
@@ -43,6 +44,11 @@ class local_server:
         if self.pre_whitelist:
             for user in self.pre_whitelist:
                 self.add_to_whitelist(user)
+
+        if self.debugging:
+            httpors = "http"
+        else:
+            httpors = "https"
 
     def get_whitelist_enabled(self):
         return self.whitelist_enabled
@@ -90,7 +96,7 @@ class local_server:
         url_actual = get_config_key("server_url")
 
         r = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
+            f"{httpors}://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
         # get echoed response
         response = r.text
 
@@ -113,7 +119,7 @@ class local_server:
         url_actual = get_config_key("server_url")
 
         r = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
+            f"{httpors}://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
         # get echoed response
         response = r.text
 
@@ -160,7 +166,7 @@ class local_server:
         url_actual = get_config_key("server_url")
 
         r = requests.get(
-            f"https://{url_actual}/{path}destruction_manager.php?auth={callback_type}&destructive_action_actual=true&unid={unid}&pkey={priv_key}")
+            f"{httpors}://{url_actual}/{path}destruction_manager.php?auth={callback_type}&destructive_action_actual=true&unid={unid}&pkey={priv_key}")
         # get echoed response
         response = r.text
         if response == "true":
@@ -186,7 +192,7 @@ class local_server:
         url_actual = get_config_key("server_url")
 
         r = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
+            f"{httpors}://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
         # get echoed response
         response = r.text
 
@@ -217,7 +223,7 @@ class local_server:
             whitelist = "null"
 
         successful = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&global_update=true&unid={unid}&priv_key={priv_key}&ip_pub={specified_ip_pub}&ip_internal={specified_ip_internal}&port={specified_port}&whitelist={whitelist}")
+            f"{httpors}://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&global_update=true&unid={unid}&priv_key={priv_key}&ip_pub={specified_ip_pub}&ip_internal={specified_ip_internal}&port={specified_port}&whitelist={whitelist}")
         # Convert response to json
         # print(successful)
         # print(successful.text)
@@ -239,7 +245,7 @@ class local_server:
         url_actual = get_config_key("server_url")
 
         r = requests.get(
-            f"https://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
+            f"{httpors}://{url_actual}/{path}create.php?auth={callback_type}&srv_host_callback=true&unid={unid}&pkey={priv_key}")
         # Convert response to json
         node_info = r.json()
         del r

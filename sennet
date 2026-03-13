@@ -19,7 +19,7 @@ case "$1" in
       echo "Killing existing SentinelNetGuard Node process on port 59923..."
       kill "$PID"
     fi
-    python3 /opt/SentinelNetGuard/main.py
+    python3 /opt/SentinelNetGuard/main.py "${@:2}"
     ;;
   --remove)
     echo "Removing installation if present..."

@@ -75,8 +75,8 @@ def clear():
     """
     Clears the terminal screen.
     """
-    os.system('cls' if os.name == 'nt' else 'clear')
-
+    if not debugging:
+        os.system('cls' if os.name == 'nt' else 'clear')
 
 clear()
 
@@ -110,6 +110,7 @@ def pre_install_check():
 
 
 def init():
+    global server_host_endpoint
     local_logging.LOGGING_MSG(1, "-+-+-+-+-[ INITIALIZING NEW RUN ]+-+-+-+-+")
     if debugging:
         local_logging.LOGGING_MSG(5,"RUNNING IN DEBUG MODE!")
@@ -218,6 +219,7 @@ def main_node_func(stopping_event, srv):
     """
     Think of this thread as the genesis function.
     """
+    
     clear()
     local_logging.LOGGING_MSG(2, "Main node thread started...")
     while not stopping_event.is_set():
@@ -231,7 +233,15 @@ def main_node_func(stopping_event, srv):
 
 def main():
     init()
-    srv = useful.local_server(pre_whitelist=whitelist_text, unid="test", owner="test", lifetime=0, destruct_time=-1)
+    srv = useful.local_server(
+        pre_whitelist=whitelist_text,
+        unid="test",
+        owner="test",
+        lifetime=0,
+        destruct_time=-1,
+        debugging=debugging
+        )
+        
     local_logging.LOGGING_MSG(1, "Server created.")
     time.sleep(0)
     # srv.update_local_cfg()
