@@ -24,7 +24,11 @@ whitelist_text = None
 
 i = 1
 while i < len(sys.argv):
-    if sys.argv[i] == '-pre':
+    # Debug?
+    if sys.argv[i] == "--debug":
+        debugging = True
+
+    elif sys.argv[i] == '-pre':
         # Check if there's a value after '-pre'
         if i + 1 < len(sys.argv):
             pre_text = sys.argv[i + 1]
@@ -105,13 +109,12 @@ def pre_install_check():
 
 def init():
     local_logging.LOGGING_MSG(1, "-+-+-+-+-[ INITIALIZING NEW RUN ]+-+-+-+-+")
-    time.sleep(0)
+    if debugging:
+        local_logging.LOGGING_MSG(5,"RUNNING IN DEBUG MODE!")
+
     local_logging.LOGGING_MSG(1, "Initializing...")
-    time.sleep(0)
     local_logging.LOGGING_MSG(1, "Server initializing...")
-    time.sleep(0)
     local_logging.LOGGING_MSG(1, "Checking if first run...")
-    time.sleep(0)
     pre_done = pre_install_check()
     pre_gen = None
     try:
